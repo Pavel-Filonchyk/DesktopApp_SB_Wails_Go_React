@@ -10,7 +10,7 @@ import { sendMenu } from '../../core/actions/restMenuActions'
 import { postDishes } from '../../core/actions/restDishesActions'
 import style from './Main.module.scss'
 
-import { GetMenu } from "../../../wailsjs/go/main/App";
+import { GetAllMenu } from "../../../wailsjs/go/main/App";
 
 export default function Main() {
   const ref = useRef(null)
@@ -25,7 +25,7 @@ export default function Main() {
   useEffect(() => {
     async function fetchData() {
       try {
-        GetMenu()
+        GetAllMenu()
         .then(res =>JSON.parse(res) )
         .then(data => dispatch(sendMenu(data)))
       } catch (error) {
