@@ -7,13 +7,11 @@ const initialState = {
 const restMenuReducer = (state = initialState, action) => {
     switch (action.type){ 
         case 'SEND_MENU':
-           
             return {
                 ...state,
                 menu: action.payload
             }
         case 'POST_DISHES':
-            console.log(action.payload)
             return {
                 ...state,
                 postDishes: state.menu[action.payload]

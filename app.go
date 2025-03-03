@@ -3,7 +3,7 @@ package main
 import (
 	"context"
 	"Sushi/backend/controllers"
-
+	"Sushi/backend/db"
 )
 
 // App struct
@@ -21,14 +21,19 @@ func (a *App) startup(ctx context.Context) {
 	a.ctx = ctx
 }
 
-// Вызов маршрутов
 func (a *App) GetAllMenu() string {
 	return controllers.GetMenu()
 }
+
 func (a *App) GetAllDiscounts() string {
-	//return controllers.GetDiscounts()
-	return "err"
+	db.ConnectDB()
+	return controllers.GetDiscountsDirect()
 }
-func (a *App) SendBasket() string {
-	return controllers.GetMenu()
+
+func (a *App) GetAllBasket() string {
+	return controllers.GetBasket()
+}
+
+func (a *App) SendAllBasket(basketJson string) {
+	controllers.SendBasket(basketJson)
 }

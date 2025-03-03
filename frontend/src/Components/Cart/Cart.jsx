@@ -8,6 +8,7 @@ import Footer from '../Footer/Footer'
 import { HomeOutlined, DeleteOutlined } from '@ant-design/icons'
 import { calc, deleteDish } from '../../core/actions/buyProductActions'
 
+import { GetAllBasket, SendAllBasket } from "../../../wailsjs/go/main/App";
 import phone from './images/phone.png'
 import insta from './images/insta.png'
 import watsapp from './images/whatsapp1.png'
@@ -19,6 +20,7 @@ export default function Cart() {
     const card = useSelector(({buyProductReducer: { card }}) => card)
     const language = useSelector(({chooseItemsReducer: { language }}) => language)
 
+    const [basket, setBasket] = useState([])
     const [cost, setCost] = useState(0)
     const [code, setCode] = useState('')
     const [name, setName] = useState('')
@@ -28,12 +30,36 @@ export default function Cart() {
 
     const allCost = card.length > 0 ? card.map(item => item.cost).reduce((n, m)=> Number(n) + Number(m)) : ''
 
-    // useEffect(() => {
-    //     if(card.length > 0){
-    //         const summ = card.map(item => item.cost).reduce((n, m)=> Number(n) + Number(m))
-    //         setCost(summ)
-    //     }
-    // }, [card])
+    useEffect(() => {
+        async function fetchData() {
+            try {
+                const result = await GetAllBasket()
+                const data = JSON.parse(result)
+                setBasket(data)
+            } catch (error) {
+                console.error("Ошибка при загрузке корзины:", error)
+            }
+        }
+        fetchData()
+    }, [])
+
+    useEffect(() => {
+        async function updateData() {
+            try {
+                const basketJson = JSON.stringify(card)
+                await SendAllBasket(basketJson)
+            } catch (error) {
+                console.error("Ошибка при отправке корзины:", error)
+            }
+        }
+        if (card.length > 0) {
+            updateData()
+        }
+    }, [card])
+    
+    console.log(card)
+    console.log(basket)
+
     useEffect(() => {
         if(code === 'Yummy'){
             setCost(cost - (cost*0.1))
@@ -76,7 +102,7 @@ export default function Cart() {
                 }
             </span>
             {
-                card?.map(item => {return (
+                [...card, ...basket]?.map(item => {return (
                     <div className={style.cart}
                         key={item.id}
                     >

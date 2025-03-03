@@ -6,7 +6,6 @@ import (
 	"io/ioutil"
 )
 
-// GetMenu возвращает меню
 func GetMenu() string {
 	fmt.Println("Функция GetMenu() вызвана!") 
 

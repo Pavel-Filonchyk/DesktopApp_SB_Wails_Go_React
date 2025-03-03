@@ -10,7 +10,7 @@ import { sendMenu } from '../../core/actions/restMenuActions'
 import { postDishes } from '../../core/actions/restDishesActions'
 import style from './Main.module.scss'
 
-import { GetAllMenu } from "../../../wailsjs/go/main/App";
+import { GetAllMenu, GetAllDiscounts } from "../../../wailsjs/go/main/App";
 
 export default function Main() {
   const ref = useRef(null)
@@ -19,6 +19,7 @@ export default function Main() {
 
   const menu = useSelector(({restMenuReducer: { menu }}) => menu)
 
+  const [discounts, setDiscouts] = useState(null)
   const [language, setLanguage] = useState('tr')
   const [nameDish, setNameDish] = useState('nameDishTr')
 
@@ -35,6 +36,19 @@ export default function Main() {
     fetchData()
   }, [])
   
+  useEffect(() => {
+    async function fetchData() {
+      try {
+        GetAllDiscounts()
+        .then(res =>JSON.parse(res) )
+        .then(data => setDiscouts(data))
+      } catch (error) {
+        console.error("Ошибка при загрузке меню:", error)
+      }
+    }
+    fetchData()
+  }, [])
+
   useEffect(() => {
     setNameDish(language === 'ru' ? 'nameDishRu' : language === 'en' ? 'nameDishEn' : 'nameDishTr')
   }, [language])
